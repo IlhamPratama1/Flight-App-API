@@ -1,25 +1,7 @@
-import express, { Application, Request, Response } from "express";
+import App from "./src/app";
+import validateEnv from "./src/utils/validateEnv";
 
-const app: Application = express();
-const port = 3000;
+validateEnv();
 
-// Body parsing Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get(
-    "/",
-    async (req: Request, res: Response): Promise<Response> => {
-        return res.status(200).send({
-            message: "Hello World!",
-        });
-    }
-);
-
-try {
-    app.listen(port, (): void => {
-        console.log(`Connected successfully on port ${port}`);
-    });
-} catch (error) {
-    console.error(`Error occured: ${error}`);
-}
+const app = new App();
+app.listen();
