@@ -8,6 +8,7 @@ import { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE } from '../config';
 import RoleModel from '../models/role.model';
 import UserModel from '../models/user.model';
 import refreshTokenModel from '../models/refreshToken.model';
+import AirlineModel from '../models/airline.model';
 
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE as string, DB_USER as string, DB_PASSWORD as string, {
@@ -23,6 +24,7 @@ const sequelize = new Sequelize.Sequelize(DB_DATABASE as string, DB_USER as stri
 const DB = {
     Users: UserModel(sequelize),
     Roles: RoleModel(sequelize),
+    Airlines: AirlineModel(sequelize),
     RefreshToken: refreshTokenModel(sequelize),
     sequelize,
     Sequelize,

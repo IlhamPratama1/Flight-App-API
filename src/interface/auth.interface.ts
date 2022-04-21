@@ -1,6 +1,3 @@
-import { Request } from "express";
-import { User } from '.';
-
 export interface signinInterface {
     email: string,
     password: string
@@ -18,9 +15,9 @@ export interface getRefreshInterface {
 
 export interface DataStoredInToken {
     id: number;
-}  
+}
 
-export interface RequestWithUser extends Request {
-    user: User;
+export interface DataStoredInTokenForget {
+    email: number;
 }
   

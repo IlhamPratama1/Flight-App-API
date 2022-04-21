@@ -40,7 +40,6 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 type: DataTypes.STRING(255)
             },
             isVerfied: {
-                allowNull: true,
                 type: DataTypes.BOOLEAN
             },
             confirmationCode: {
@@ -48,7 +47,7 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 type: DataTypes.STRING(255)
             },
             profilePicture: {
-                type: DataTypes.STRING(2555)
+                type: DataTypes.STRING(255)
             }
         },
         {

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Component
 import DB from "../databases";
-import { User, signinInterface, signupInterface } from "../interface";
+import { User, signinInterface, signupInterface, DataStoredInTokenForget } from "../interface";
 import { SECRET_KEY, EMAIL, PASSWORD } from "../config";
 import { HttpException } from '../exceptions/HttpException';
 
@@ -91,6 +91,42 @@ export default class AuthService {
         return refreshToken.token;
     }
 
+    public async forgetPassword(userEmail: string): Promise<void> {
+        const user = await DB.Users.findOne({ where: { email: userEmail } });
+        if (!user) throw new HttpException(400, `user with email not found`);
+
+        const forgetToken: string = jwt.sign({ email: userEmail }, SECRET_KEY as string );
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: EMAIL as string,
+                pass: PASSWORD as string
+            }
+        });
+
+        let message = {
+            from: EMAIL as string,
+            to: userEmail,
+            subject: "Forget password qaqaq",
+            html: `localhost:8000/verify-forget-password/${forgetToken}`
+        }
+
+        await transporter.sendMail(message);
+    }
+
+    public async confirmPassword(userData: signinInterface, forgetToken: string): Promise<void> {
+        const isValid = jwt.verify(forgetToken, SECRET_KEY as string) as DataStoredInTokenForget;
+        const user = await DB.Users.findOne({ where: { email: isValid.email} });
+
+        if (!user) throw new HttpException(400, `user with token not found`);
+        if (user.email !== userData.email) throw new HttpException(400, `forget token not valid`);
+        
+        user.password = bcrypt.hashSync(userData.password, 10);
+        await user.save();
+    }
+
     public async sendConfirmationCode(userEmail: string): Promise<string> {
         const confimationCode: string = jwt.sign({ email: userEmail }, SECRET_KEY as string );
 
@@ -108,7 +144,7 @@ export default class AuthService {
             from: EMAIL as string,
             to: userEmail,
             subject: "Email qaqaq",
-            html: `localhost:8000/verify/${confimationCode}`
+            html: `localhost:8000/verify-email/${confimationCode}`
         }
 
         await transporter.sendMail(message);

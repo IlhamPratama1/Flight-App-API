@@ -14,7 +14,7 @@ export default class AuthController {
             const user: User = await this.auth.confirmEmail(req.user, req.params.code);
             return res.send(user);
         } catch (err) {
-            return res.status(400).send({ 'message': `${err}`});
+            return res.status(400).send({ 'message': `${err}` });
         }
     }
 
@@ -23,7 +23,7 @@ export default class AuthController {
             const confirmationCode: string = await this.auth.resendVerificationCode(req.user);
             return res.send({ 'code': confirmationCode });
         } catch (err) {
-            return res.status(400).send({ 'message': `${err}`});
+            return res.status(400).send({ 'message': `${err}` });
         }
     }
 
@@ -48,7 +48,7 @@ export default class AuthController {
                 refreshToken: refreshToken
             });
         } catch (err) {
-            return res.status(400).send({ 'message': `${err}`})
+            return res.status(400).send({ 'message': `${err}` });
         }
     }
 
@@ -61,7 +61,26 @@ export default class AuthController {
                 refreshToken: refreshToken
             });
         } catch (err) {
-            return res.status(400).send({ 'message': `${err}`})
+            return res.status(400).send({ 'message': `${err}` });
+        }
+    }
+
+    public forgetPassword = async (req: Request, res: Response) => {
+        try {
+            await this.auth.forgetPassword(req.body.email);
+            return res.status(200).send({ 'message': 'forget password confirmation send' });
+        } catch (err) {
+            return res.status(400).send({ 'message': `${err}` });
+        }
+    }
+
+    public verifyForgetPassword = async (req: Request<{ forgetToken: string }>, res: Response) => {
+        try {
+            const userData: signinInterface = req.body;
+            await this.auth.confirmPassword(userData, req.params.forgetToken);
+            return res.status(200).send({ 'message': 'change password success' });
+        } catch (err) {
+            return res.status(400).send({ 'message': `${err}` });
         }
     }
 }

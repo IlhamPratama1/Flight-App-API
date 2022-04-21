@@ -14,6 +14,8 @@ import { Routes } from "./interface";
 
 // Routes
 import { HomeRoute, AuthRoute } from "./routes";
+import { UserRoute } from "./routes/user.routes";
+import { AirlineRoute } from "./routes/airline.routes";
 
 class App {
     public app: express.Application;
@@ -25,7 +27,12 @@ class App {
         this.app = express();
         this.env = NODE_ENV || 'development';
         this.port = PORT || 3000;
-        this.routes = [new HomeRoute(), new AuthRoute()]
+        this.routes = [
+            new HomeRoute(),
+            new AuthRoute(),
+            new UserRoute(),
+            new AirlineRoute(),
+        ]
         
         this.connectToDatabase();
         this.initializeMiddlewares();
@@ -47,6 +54,7 @@ class App {
         this.app.use(helmet());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
+        this.app.use('/static', express.static('static'));
     }
 
     private initializeRoutes() {
@@ -56,18 +64,7 @@ class App {
     }
 
     private connectToDatabase() {
-        DB.sequelize.sync({ force: true }).then(() => {
-            Initial();
-        });
-
-        function Initial() {
-            DB.Roles.create({
-                name: 'user'
-            });
-            DB.Roles.create({
-                name: 'admin'
-            });
-        }
+        DB.sequelize.sync({ force: false });
     }
 }
 
