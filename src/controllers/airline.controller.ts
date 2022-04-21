@@ -4,15 +4,15 @@ import fs from 'fs';
 
 // Component
 import DB from "../databases";
-import { AirlineData } from "../interface";
+import { Airline, AirlineData } from "../interface";
+import AirlineService from "../services/airline.service";
 
 export default class AirlineController {
+    private airlineService = new AirlineService();
+
     public getAirlines = async (req: Request, res: Response) => {
         try {
-            const airlines = await DB.Airlines.findAll();
-            if (!airlines) return res.status(400).send({ 'message': `error get users data` });
-
-            return res.status(200).send(airlines);
+            return res.status(200).send(await this.airlineService.getAllAirline());
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
         }
@@ -20,9 +20,7 @@ export default class AirlineController {
 
     public getAirlineById = async (req: Request<{ id: number }>, res: Response) => {
         try {
-            const airline = await DB.Airlines.findByPk(req.params.id);
-            if (!airline) return res.status(400).send({ 'message': `user not found` });
-
+            const airline: Airline = await this.airlineService.getAirlineById(req.params.id);
             return res.status(200).send(airline);
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
@@ -34,10 +32,7 @@ export default class AirlineController {
             const airlineData: AirlineData = req.body;
             const path: string = req.protocol + '://' + req.get('host') + "/static/images/" + req.file.filename; 
 
-            const airline = await DB.Airlines.create({
-                name: airlineData.name,
-                picture: path,
-            });
+            const airline: Airline = await this.airlineService.createAirline(airlineData, path);
 
             return res.status(200).send(airline);
         } catch (err) {

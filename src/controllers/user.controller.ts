@@ -5,14 +5,14 @@ import fs from 'fs';
 // Component
 import DB from '../databases';
 import { RequestWithUser, User } from '../interface';
+import UserService from '../services/user.service';
 
 export default class UserController {
+    public userService = new UserService();
+
     public getUsers = async (req: Request, res: Response) => {
         try {
-            const users = await DB.Users.findAll();
-            if (!users) return res.status(400).send({ 'message': `error get users data` });
-
-            return res.status(200).send(users);
+            return res.status(200).send(await this.userService.getAllUser());
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
         }
@@ -20,20 +20,16 @@ export default class UserController {
 
     public getUserById = async (req: Request<{ id: number }>, res: Response) => {
         try {
-            const user = await DB.Users.findByPk(req.params.id);
-            if (!user) return res.status(400).send({ 'message': `user not found` });
-
+            const user: User = await this.userService.getUserById(req.params.id);
             return res.status(200).send(user);
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
         }
     }
 
-    public getUserByUsername = async (req: Request<{ username: number }>, res: Response) => {
+    public getUserByUsername = async (req: Request<{ username: string }>, res: Response) => {
         try {
-            const user = await DB.Users.findOne({ where: { username: req.params.username } });
-            if (!user) return res.status(400).send({ 'message': `User not found` });
-
+            const user: User = await this.userService.getUserByUsername(req.params.username);
             return res.status(200).send(user);
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });

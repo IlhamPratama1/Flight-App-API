@@ -13,6 +13,8 @@ import { HttpException } from '../exceptions/HttpException';
 
 export default class AuthService {
     public users = DB.Users;
+    public roles = DB.Roles;
+    public refreshToken = DB.RefreshToken;
 
     public async signIn(userData: signinInterface): Promise<{ user: User, roles: string[], accessToken: string, refreshToken: string }> {
         const findUser = await this.users.findOne({ where: { email: userData.email } });
@@ -39,7 +41,7 @@ export default class AuthService {
         
         const confirmationCode: string = await this.sendConfirmationCode(userData.email);
         
-        const newUser = await DB.Users.create({
+        const newUser = await this.users.create({
             username: userData.username,
             email: userData.email,
             password: bcrypt.hashSync(userData.password, 10),
@@ -48,14 +50,14 @@ export default class AuthService {
             profilePicture: ''
         });
 
-        const role = await DB.Roles.findAll({ where: { name: 'user' } });
+        const role = await this.roles.findAll({ where: { name: 'user' } });
         if (role) await newUser.setRoleModels(role);
 
         return newUser;
     }
 
     public async getNewAccessToken(userRefreshToken: string, userId: number): Promise<{ accessToken: string, refreshToken: string }> {
-        const refreshToken = await DB.RefreshToken.findOne({ where: { token: userRefreshToken } });
+        const refreshToken = await this.refreshToken.findOne({ where: { token: userRefreshToken } });
 
         if(!refreshToken) throw new HttpException(400, `refresh token not found`);
         if(refreshToken.expiryDate.getTime() < new Date().getTime()) {
@@ -82,7 +84,7 @@ export default class AuthService {
         tokenExpiredAt.setSeconds(tokenExpiredAt.getSeconds() + tokenExpiredIn);
         
         const token = uuidv4();
-        const refreshToken = await DB.RefreshToken.create({
+        const refreshToken = await this.refreshToken.create({
             token: token,
             expiryDate: tokenExpiredAt
         });
@@ -92,7 +94,7 @@ export default class AuthService {
     }
 
     public async forgetPassword(userEmail: string): Promise<void> {
-        const user = await DB.Users.findOne({ where: { email: userEmail } });
+        const user = await this.users.findOne({ where: { email: userEmail } });
         if (!user) throw new HttpException(400, `user with email not found`);
 
         const forgetToken: string = jwt.sign({ email: userEmail }, SECRET_KEY as string );
@@ -118,7 +120,7 @@ export default class AuthService {
 
     public async confirmPassword(userData: signinInterface, forgetToken: string): Promise<void> {
         const isValid = jwt.verify(forgetToken, SECRET_KEY as string) as DataStoredInTokenForget;
-        const user = await DB.Users.findOne({ where: { email: isValid.email} });
+        const user = await this.users.findOne({ where: { email: isValid.email} });
 
         if (!user) throw new HttpException(400, `user with token not found`);
         if (user.email !== userData.email) throw new HttpException(400, `forget token not valid`);
@@ -152,7 +154,7 @@ export default class AuthService {
     }
 
     public async resendVerificationCode(userData: User): Promise<string> {
-        const user = await DB.Users.findByPk(userData.id);
+        const user = await this.users.findByPk(userData.id);
         if (!user) throw new HttpException(400, `User not found`);
         if (user.isVerfied) throw new HttpException(400, `User already verified`);
 
@@ -164,7 +166,7 @@ export default class AuthService {
     }
 
     public async confirmEmail(userData: User, codeConfimation: string): Promise<User> {
-        const user = await DB.Users.findOne({ where: { id: userData.id } });
+        const user = await this.users.findOne({ where: { id: userData.id } });
         
         if (!user) throw new HttpException(400, `confirmation code not valid`);
         if (user.confirmationCode !== codeConfimation) throw new HttpException(400, `confirmation code not valid`);
