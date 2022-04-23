@@ -19,10 +19,10 @@ export class UserRoute implements Routes {
         this.router.get(`${this.path}detail`, this.authMiddleware.checkIfUser, this.userController.getMyUser);
         this.router.get(`${this.path}id/:id`,this.authMiddleware. checkIfUser, this.userController.getUserById);
         this.router.get(`${this.path}username/:username`, this.authMiddleware.checkIfUser, this.userController.getUserByUsername);
-        this.router.post(`${this.path}change-profile`, [
+        this.router.put(`${this.path}change-profile`, [
             this.authMiddleware.checkIfUser,
             uploadImage
         ], this.userController.changeProfilePicture);
-        this.router.post(`${this.path}delete-profile`, this.authMiddleware.checkIfUser, this.userController.deleteProfilePicture);
+        this.router.delete(`${this.path}delete-profile`, this.authMiddleware.checkIfUser, this.userController.deleteProfilePicture);
     }
 }

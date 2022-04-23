@@ -1,9 +1,9 @@
 import { Model, DataTypes, Sequelize, Optional, HasOneSetAssociationMixin, HasOneGetAssociationMixin } from "sequelize";
 import { RefreshToken, User } from "../interface";
 
-export type TokenreationAttributes = Optional<RefreshToken, 'id'>;
+export type TokenCreationAttributes = Optional<RefreshToken, 'id'>;
 
-class RefreshTokenModel extends Model<RefreshToken, TokenreationAttributes> implements RefreshToken {
+export class RefreshTokenModel extends Model<RefreshToken, TokenCreationAttributes> implements RefreshToken {
     declare id: number;
     declare token: string;
     declare expiryDate: Date;

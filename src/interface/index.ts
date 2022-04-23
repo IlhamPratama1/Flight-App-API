@@ -5,3 +5,5 @@ export * from './auth.interface';
 export * from './refreshToken.interface';
 export * from './airline.interface';
 export * from './request.interface';
+export * from './flight.interface';
+export * from './airport.interface';

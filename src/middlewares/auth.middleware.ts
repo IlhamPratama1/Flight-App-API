@@ -50,4 +50,44 @@ export default class AuthMiddleware {
             return res.status(401).send({ 'message': `${err}`});
         }
     }
+
+    public checkIfAdmin = async (req: RequestWithUserGeneric<{}>, res: Response, next: NextFunction) => {
+        try {
+            const tokenProvided = (req.header('x-access-token'));
+            if (tokenProvided) {
+                const isValid = jwt.verify(tokenProvided, SECRET_KEY as string) as DataStoredInToken;
+                const { user, isRole } = await this.authMiddleware.checkUserRoleIs(isValid.id, 'admin');
+                if (isRole) {
+                    req.user = user;
+                    next();
+                } else {
+                    return res.status(401).send({ 'message': `Wrong authentication token`});
+                }
+            } else {
+                return res.status(401).send({ 'message': `Authentication token not provided`});
+            }
+        } catch (err) {
+            return res.status(401).send({ 'message': `${err}`});
+        }
+    }
+
+    public checkIfUserAdmin = async (req: RequestWithUserGeneric<{}>, res: Response, next: NextFunction) => {
+        try {
+            const tokenProvided = (req.header('x-access-token'));
+            if (tokenProvided) {
+                const isValid = jwt.verify(tokenProvided, SECRET_KEY as string) as DataStoredInToken;
+                const { user, isRole } = await this.authMiddleware.checkUserRoleIs(isValid.id, 'user', 'admin');
+                if (isRole) {
+                    req.user = user;
+                    next();
+                } else {
+                    return res.status(401).send({ 'message': `Wrong authentication token`});
+                }
+            } else {
+                return res.status(401).send({ 'message': `Authentication token not provided`});
+            }
+        } catch (err) {
+            return res.status(401).send({ 'message': `${err}`});
+        }
+    }
 }

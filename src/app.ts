@@ -1,5 +1,5 @@
 // Lib
-import express, { Request, Response } from "express";
+import express from "express";
 import helmet from "helmet";
 import cors from 'cors';
 
@@ -13,10 +13,10 @@ import DB from "./databases";
 import { Routes } from "./interface";
 
 // Routes
-import { HomeRoute, AuthRoute } from "./routes";
-import { UserRoute } from "./routes/user.routes";
-import { AirlineRoute } from "./routes/airline.routes";
-
+import { 
+    HomeRoute, AuthRoute, UserRoute, 
+    AirlineRoute, FlightRoute, AirportRoute
+} from "./routes";
 class App {
     public app: express.Application;
     public env: string;
@@ -32,6 +32,8 @@ class App {
             new AuthRoute(),
             new UserRoute(),
             new AirlineRoute(),
+            new FlightRoute(),
+            new AirportRoute(),
         ]
         
         this.connectToDatabase();

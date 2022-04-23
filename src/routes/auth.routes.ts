@@ -17,7 +17,7 @@ export class AuthRoute implements Routes {
         this.router.post(`${this.path}signin`, this.authController.signInUser);
         this.router.get(`${this.path}verify-email/:code`, this.authMiddleware.checkIfLogin, this.authController.verifyEmail);
         this.router.get(`${this.path}resend-verification`, this.authMiddleware.checkIfLogin, this.authController.resendVerification);
-        this.router.post(`${this.path}get-access-token`, this.authMiddleware.checkIfLogin, this.authController.getNewAccess);
+        this.router.post(`${this.path}get-access-token`, this.authController.getNewAccess);
         this.router.post(`${this.path}forget-password`, this.authController.forgetPassword);
         this.router.post(`${this.path}verify-forget-password/:forgetToken`, this.authController.verifyForgetPassword);
     }

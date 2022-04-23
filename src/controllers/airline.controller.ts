@@ -45,7 +45,7 @@ export default class AirlineController {
             const airlineData: AirlineData = req.body;
 
             const airline = await DB.Airlines.findByPk(req.params.id);
-            if (!airline) return res.status(400).send({ 'message': `User not found` });
+            if (!airline) return res.status(400).send({ 'message': `Ariline not found` });
 
             if (req.file) {
                 const imagePath: string = airline.picture.replace(req.protocol + '://' + req.get('host') + '/', '');
@@ -67,6 +67,7 @@ export default class AirlineController {
     public deleteAirline = async (req: Request<{ id: number}>, res: Response) => {
         try {
             const airline = await DB.Airlines.findByPk(req.params.id);
+            if (!airline) return res.status(400).send({ 'message': `Airline not found` });
             
             if (airline.picture !== "") {
                 const imagePath: string = airline.picture.replace(req.protocol + '://' + req.get('host') + '/', '');

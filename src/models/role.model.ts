@@ -4,7 +4,7 @@ import { Role } from "../interface";
 
 export type RoleCreationAttributes = Optional<Role, 'id'>;
 
-class RoleModel extends Model<Role, RoleCreationAttributes> implements Role {
+export class RoleModel extends Model<Role, RoleCreationAttributes> implements Role {
     declare id: number;
     declare name: string;
 }
@@ -18,7 +18,7 @@ export default function (sequelize: Sequelize): typeof RoleModel {
                 type: DataTypes.INTEGER
             },
             name: {
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM('user', 'admin', 'moderator'),
                 allowNull: false,
                 unique: true
             }

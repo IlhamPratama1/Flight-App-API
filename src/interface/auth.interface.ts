@@ -6,7 +6,8 @@ export interface signinInterface {
 export interface signupInterface {
     username: string,
     email: string,
-    password: string
+    password: string,
+    role: string
 }
 
 export interface getRefreshInterface {

@@ -55,7 +55,7 @@ export default class AuthController {
     public getNewAccess = async (req: RequestWithUser, res: Response) => {
         try {
             const accessRequest: getRefreshInterface = req.body;
-            const { accessToken, refreshToken } = await this.auth.getNewAccessToken(accessRequest.refreshToken, req.user.id);
+            const { accessToken, refreshToken } = await this.auth.getNewAccessToken(accessRequest.refreshToken);
             return res.status(200).send({
                 accessToken: accessToken,
                 refreshToken: refreshToken

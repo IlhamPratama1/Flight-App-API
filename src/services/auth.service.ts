@@ -50,24 +50,25 @@ export default class AuthService {
             profilePicture: ''
         });
 
-        const role = await this.roles.findAll({ where: { name: 'user' } });
+        const role = await this.roles.findAll({ where: { name: userData.role } });
         if (role) await newUser.setRoleModels(role);
 
         return newUser;
     }
 
-    public async getNewAccessToken(userRefreshToken: string, userId: number): Promise<{ accessToken: string, refreshToken: string }> {
+    public async getNewAccessToken(userRefreshToken: string): Promise<{ accessToken: string, refreshToken: string }> {
         const refreshToken = await this.refreshToken.findOne({ where: { token: userRefreshToken } });
-
         if(!refreshToken) throw new HttpException(400, `refresh token not found`);
+
         if(refreshToken.expiryDate.getTime() < new Date().getTime()) {
             await refreshToken.destroy();
             throw new HttpException(400, `refresh token expired`);
         }
+        const user = await refreshToken.getUserModel();
         
         await refreshToken.destroy();
-        const newAccessToken: string = this.createAccessToken(userId);
-        const newRefreshToken: string = await this.createRefreshToken(userId);
+        const newAccessToken: string = this.createAccessToken(user.id);
+        const newRefreshToken: string = await this.createRefreshToken(user.id);
 
         return { accessToken: newAccessToken, refreshToken: newRefreshToken };
     }

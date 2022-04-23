@@ -1,5 +1,5 @@
 // Lib
-import { Model, Sequelize, DataTypes, Optional, HasManyGetAssociationsMixin, HasManySetAssociationsMixin } from 'sequelize';
+import { Model, Sequelize, DataTypes, Optional, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin } from 'sequelize';
 import { User, Role } from '../interface';
 
 export type UserCreationAttributes = Optional<User, 'id'>;
@@ -13,8 +13,8 @@ export class UserModel extends Model<User, UserCreationAttributes> implements Us
     declare confirmationCode: string;
     declare profilePicture: string;
 
-    declare getRoleModels: HasManyGetAssociationsMixin<Role>;
-    declare setRoleModels: HasManySetAssociationsMixin<Role, number>;
+    declare getRoleModels: BelongsToManyGetAssociationsMixin<Role>;
+    declare setRoleModels: BelongsToManySetAssociationsMixin<Role, number>;
 }
 
 export default function (sequelize: Sequelize): typeof UserModel {
