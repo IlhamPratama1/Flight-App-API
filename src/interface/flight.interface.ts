@@ -1,3 +1,5 @@
+import { CountTotal } from '.';
+
 export interface Flight {
     id: number,
     code: string,
@@ -27,6 +29,15 @@ export interface FlightData {
     baggage: number
 }
 
+export interface FlightFacility {
+    adultPx: number,
+    childPx: number,
+    babyPx: number,
+    covidInsurance: string | boolean,
+    baggageInsurance: string | boolean,
+    fullProtection: string | boolean
+}
+
 export interface SearchFlight {
     AirlineModelId: number,
     flightTime: Date,
@@ -35,8 +46,15 @@ export interface SearchFlight {
     arrivalDate: Date,
     fromAirportId: number,
     toAirportId: number,
-    adult: number,
-    child: number,
-    baby: number,
+    adultPx: number,
+    childPx: number,
+    babyPx: number,
     seatType: string
+}
+
+export interface PaymentFlight {
+    adultPx: CountTotal,
+    childPx: CountTotal,
+    babyPx: CountTotal,
+    total: number
 }

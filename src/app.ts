@@ -17,6 +17,8 @@ import {
     HomeRoute, AuthRoute, UserRoute, 
     AirlineRoute, FlightRoute, AirportRoute
 } from "./routes";
+
+
 class App {
     public app: express.Application;
     public env: string;

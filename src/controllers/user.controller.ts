@@ -4,6 +4,7 @@ import fs from 'fs';
 
 // Component
 import DB from '../databases';
+import { HttpException } from '../exceptions/HttpException';
 import { RequestWithUser, User } from '../interface';
 import UserService from '../services/user.service';
 
@@ -51,12 +52,14 @@ export default class UserController {
         try {
             const user: User = req.user;
             const userModel = await DB.Users.findByPk(user.id);
+            if (!userModel) throw new HttpException(400, 'Error get User');
 
             if (userModel.profilePicture !== "") {
                 const imagePath: string = userModel.profilePicture.replace(req.protocol + '://' + req.get('host') + '/', '');
                 fs.unlinkSync(imagePath);
             }
             
+            if (!req.file) throw new HttpException(400, 'Please provide image');
             const path: string = req.protocol + '://' + req.get('host') + "/static/images/" + req.file.filename;            
             userModel.profilePicture = path;
             await userModel.save();
@@ -71,6 +74,7 @@ export default class UserController {
         try {
             const user: User = req.user;
             const userModel = await DB.Users.findByPk(user.id);
+            if (!userModel) throw new HttpException(400, 'Error get User');
 
             if (userModel.profilePicture !== "") {
                 const imagePath = userModel.profilePicture.replace(req.protocol + '://' + req.get('host') + '/', '');

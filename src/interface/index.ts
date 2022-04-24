@@ -7,3 +7,7 @@ export * from './airline.interface';
 export * from './request.interface';
 export * from './flight.interface';
 export * from './airport.interface';
+export * from './payment.interface';
+export * from './facility.interface';
+export * from './passanger.interface';
+export * from './book.interface';

@@ -4,6 +4,7 @@ import fs from 'fs';
 
 // Component
 import DB from "../databases";
+import { HttpException } from "../exceptions/HttpException";
 import { Airline, AirlineData } from "../interface";
 import AirlineService from "../services/airline.service";
 
@@ -30,6 +31,8 @@ export default class AirlineController {
     public createAirline = async (req: Request, res: Response) => {
         try {
             const airlineData: AirlineData = req.body;
+
+            if (!req.file) throw new HttpException(400, 'Error get User');
             const path: string = req.protocol + '://' + req.get('host') + "/static/images/" + req.file.filename; 
 
             const airline: Airline = await this.airlineService.createAirline(airlineData, path);

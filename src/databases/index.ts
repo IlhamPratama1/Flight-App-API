@@ -11,6 +11,8 @@ import refreshTokenModel from '../models/refreshToken.model';
 import AirlineModel from '../models/airline.model';
 import flightModel from '../models/flight.model';
 import AirportModel from '../models/airport.model';
+import PassangerModel from '../models/passanger.model';
+import BookModel from '../models/book.model';
 
 
 const sequelize = new Sequelize.Sequelize(DB_DATABASE as string, DB_USER as string, DB_PASSWORD as string, {
@@ -30,6 +32,8 @@ const DB = {
     Airlines: AirlineModel(sequelize),
     Flights: flightModel(sequelize),
     Airport: AirportModel(sequelize),
+    Books: BookModel(sequelize),
+    Passangers: PassangerModel(sequelize),
     sequelize,
     Sequelize,
 };
@@ -37,6 +41,7 @@ const DB = {
 // #region User Assoc
 DB.Users.belongsToMany(DB.Roles, { through: "userRoles" });
 DB.Users.hasOne(DB.RefreshToken);
+DB.Users.hasMany(DB.Books);
 // #endregion
 
 // #region Roles Assoc
@@ -55,10 +60,21 @@ DB.Airlines.hasMany(DB.Flights);
 DB.Flights.belongsTo(DB.Airlines);
 DB.Flights.belongsTo(DB.Airport, { as: 'fromAirport', foreignKey: 'fromAirportId' });
 DB.Flights.belongsTo(DB.Airport, { as: 'toAirport', foreignKey: 'toAirportId' });
+DB.Flights.hasMany(DB.Books);
 // #endregion Flight Assoc
 
 // #region Airport Assoc
 DB.Airport.hasMany(DB.Flights);
+// #endregion
+
+// #region Book flight Assoc
+DB.Books.belongsTo(DB.Users);
+DB.Books.belongsTo(DB.Flights);
+DB.Books.hasMany(DB.Passangers);
+// #endregion
+
+// #region Passanger Assoc
+DB.Passangers.belongsTo(DB.Books);
 // #endregion
 
 export default DB;
