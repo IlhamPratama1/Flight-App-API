@@ -1,6 +1,6 @@
-export interface Facility {
-    covidInsurance: number,
-    baggageInsurance: number,
-    fullProtection: number,
-    total: number
+export interface Facilities {
+    id: number,
+    code: string,
+    name: string,
+    price: number
 }

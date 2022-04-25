@@ -8,12 +8,6 @@ export class TicketModel extends Model<Ticket, TicketCreationAttributes> impleme
     declare code: string;
     declare customerId: string;
     declare paymentId: string;
-    declare covidInsurance: boolean;
-    declare baggageInsurance: boolean;
-    declare fullProtection: boolean;
-
-    declare getFlightModel: BelongsToGetAssociationMixin<Flight>;
-    declare setFlightModel: BelongsToSetAssociationMixin<Flight, number>;
 
     declare getBookModel: BelongsToGetAssociationMixin<BookFlight>;
     declare setBookModel: BelongsToSetAssociationMixin<BookFlight, number>;
@@ -42,19 +36,7 @@ export default function (sequelize: Sequelize): typeof TicketModel {
             paymentId: {
                 type: DataTypes.STRING(255),
                 allowNull: false
-            },
-            covidInsurance: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
-            baggageInsurance: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
-            fullProtection: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
+            }
         },
         {
             tableName: 'tickets',

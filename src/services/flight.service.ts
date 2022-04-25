@@ -2,7 +2,7 @@ import DB from "../databases";
 import { HttpException } from "../exceptions/HttpException";
 import { 
     Flight, FlightData, SearchFlight, PaymentFlight,
-    Facility, FlightFacility, Passanger 
+    FlightFacility, Passanger, Facilities 
 } from "../interface";
 
 
@@ -14,6 +14,7 @@ export default class FlightService {
     public airports = DB.Airport;
     public books = DB.Books;
     public passangers = DB.Passangers;
+    public facilities = DB.Facilities;
 
     // Const variable
     private searchType: string[] = [
@@ -24,11 +25,6 @@ export default class FlightService {
     ];
     private personType: string[] = [ "adultPx", "childPx", "babyPx" ];
     private attributeOptions = { exclude: ['createdAt', 'updatedAt'] };
-    private facility = {
-        covidInsurance : 25000,
-        baggageInsurance : 15000,
-        fullProtection : 30000
-    };
 
     // Func
     public async getAllFlight(): Promise<Flight[]> {
@@ -105,10 +101,10 @@ export default class FlightService {
         if(flight.totalSeat <= 0) throw new HttpException(400, `Flight already full`);
 
         const payment: PaymentFlight = this.flightPayment(flight, facility);
-        const facilities: Facility = this.addMoreFacility(facility);
+        const { facilities, total } = await this.addFacility(facility);
         flight["payment"] = payment;
         flight["facilities"] = facilities;
-        flight["bill"] = payment.total + facilities.total;
+        flight["bill"] = payment.total + total;
 
         return flight;
     }
@@ -121,8 +117,8 @@ export default class FlightService {
         this.countPassanger(passangers, facility);
 
         const payment: PaymentFlight = this.flightPayment(flight, facility);
-        const facilities: Facility = this.addMoreFacility(facility);
-        const totalPayment: number = payment.total + facilities.total;
+        const { facilities, total } = await this.addFacility(facility);
+        const totalPayment: number = payment.total + total;
         
         let oneHourAhead = new Date();
         oneHourAhead.setMinutes(oneHourAhead.getMinutes() + 60);
@@ -136,8 +132,37 @@ export default class FlightService {
         await bookFlight.setUserModel(userId);
         await bookFlight.setFlightModel(flight);
         await bookFlight.setPassangerModels(passangers);
+        await bookFlight.setFacilityModels(facilities);
 
         return { bookFlight, facilities, payment };
+    }
+
+    public async addFacility(facility: FlightFacility) {
+        let facilities: Facilities[] = [];
+        let total: number = 0;
+
+        if (facility.covidInsurance === "true" || facility.covidInsurance === true) {
+            const facility = await this.facilities.findByPk(1);
+            if (!facility) throw new HttpException(400, `Flight not found`);
+            facilities.push(facility);
+            total = total + Number(facility.price);
+        }
+
+        if (facility.baggageInsurance === "true" || facility.baggageInsurance === true) {
+            const facility = await this.facilities.findByPk(2);
+            if (!facility) throw new HttpException(400, `Flight not found`);
+            facilities.push(facility);
+            total = total + Number(facility.price);
+        }
+
+        if (facility.fullProtection === "true" || facility.fullProtection === true) {
+            const facility = await this.facilities.findByPk(3);
+            if (!facility) throw new HttpException(400, `Flight not found`);
+            facilities.push(facility);
+            total = total + Number(facility.price);
+        }
+
+        return { facilities, total };
     }
 
     public countPassanger(passangers: Passanger[], facility: FlightFacility) {
@@ -165,32 +190,6 @@ export default class FlightService {
         facility.adultPx = adultPx;
         facility.childPx = childPx;
         facility.babyPx = babyPx;
-    }
-
-    public addMoreFacility(facility: FlightFacility): Facility {
-        let facilities: Facility = {
-            covidInsurance: 0,
-            baggageInsurance: 0,
-            fullProtection: 0,
-            total: 0
-        };
-
-        if (facility.covidInsurance === "true" || facility.covidInsurance === true) {
-            facilities.covidInsurance = this.facility.covidInsurance;
-            facilities.total = facilities.total + this.facility.covidInsurance;
-        }
-
-        if (facility.baggageInsurance === "true" || facility.baggageInsurance === true) {
-            facilities.baggageInsurance = this.facility.baggageInsurance;
-            facilities.total = facilities.total + this.facility.baggageInsurance;
-        }
-
-        if (facility.fullProtection === "true" || facility.fullProtection === true) {
-            facilities.fullProtection = this.facility.fullProtection;
-            facilities.total = facilities.total + this.facility.fullProtection;
-        }
-
-        return facilities;
     }
 
     public flightPayment(flight: Flight, flightData: SearchFlight | FlightFacility): PaymentFlight {

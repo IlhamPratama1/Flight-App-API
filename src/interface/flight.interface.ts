@@ -1,5 +1,6 @@
 import { CountTotal } from '.';
 
+// General flight type
 export interface Flight {
     id: number,
     code: string,
@@ -15,6 +16,7 @@ export interface Flight {
     baggage: number
 }
 
+// User flight data to create new flight
 export interface FlightData {
     airlineId: number,
     flightTime: Date,
@@ -29,6 +31,7 @@ export interface FlightData {
     baggage: number
 }
 
+// user flight facility to count passanger with facility
 export interface FlightFacility {
     adultPx: number,
     childPx: number,
@@ -38,6 +41,7 @@ export interface FlightFacility {
     fullProtection: string | boolean
 }
 
+// User Search flight to search flight
 export interface SearchFlight {
     page: string,
     AirlineModelId: number,
@@ -53,6 +57,7 @@ export interface SearchFlight {
     seatType: string
 }
 
+// user payment flight for type of total flight payment
 export interface PaymentFlight {
     adultPx: CountTotal,
     childPx: CountTotal,

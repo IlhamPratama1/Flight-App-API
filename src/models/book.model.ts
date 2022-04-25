@@ -1,5 +1,9 @@
-import { Optional, Model, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, Sequelize, DataTypes } from 'sequelize';
-import { BookFlight, Flight, Passanger, User } from "../interface";
+import { 
+    Optional, Model, BelongsToGetAssociationMixin, 
+    BelongsToSetAssociationMixin, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, 
+    Sequelize, DataTypes, BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin 
+} from 'sequelize';
+import { BookFlight, Facilities, Flight, Passanger, User } from "../interface";
 
 export type BookCreationAttributes = Optional<BookFlight, 'id'>;
 
@@ -17,6 +21,9 @@ export class BookModel extends Model<BookFlight, BookCreationAttributes> impleme
 
     declare getPassangerModels: HasManyGetAssociationsMixin<Passanger>;
     declare setPassangerModels: HasManySetAssociationsMixin<Passanger, number>;
+
+    declare getFacilityModels: BelongsToManyGetAssociationsMixin<Facilities>;
+    declare setFacilityModels: BelongsToManySetAssociationsMixin<Facilities, number>;
 }
 
 export default function (sequelize: Sequelize): typeof BookModel {
@@ -36,7 +43,7 @@ export default function (sequelize: Sequelize): typeof BookModel {
                 allowNull: false
             },
             amount: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DECIMAL,
                 allowNull: false
             }
         },

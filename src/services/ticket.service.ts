@@ -6,6 +6,7 @@ import { Ticket } from '../interface';
 export default class TicketService {
     public books = DB.Books;
     public tickets = DB.Tickets;
+    public flights = DB.Flights;
 
     public async generateTicket(flightBookId: number, paymentId: string, customerId: string): Promise<Ticket[]> {
         const flightBook = await this.books.findByPk(flightBookId);
@@ -17,17 +18,19 @@ export default class TicketService {
             const ticket = await this.tickets.create({
                 code: `${flightBookId}_${passangers[i].id}_${customerId}`,
                 customerId: customerId,
-                paymentId: paymentId,
-                covidInsurance: true,
-                baggageInsurance: true,
-                fullProtection: true
+                paymentId: paymentId
             });
 
-            await ticket.setFlightModel(await flightBook.getFlightModel());
             await ticket.setBookModel(flightBook);
             await ticket.setPassangerModel(passangers[i]);
             tickets.push(ticket);
         }
+
+        const flight = await this.flights.findByPk((await flightBook.getFlightModel()).id);
+        if(!flight) throw new HttpException(400, `Flight not found`);
+
+        flight.totalSeat = flight.totalSeat - passangers.length;
+        await flight.save();
 
         return tickets;
     }
