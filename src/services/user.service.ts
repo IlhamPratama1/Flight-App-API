@@ -1,9 +1,11 @@
 import DB from "../databases";
 import { HttpException } from "../exceptions/HttpException";
-import { User } from "../interface";
+import { BookFlight, User } from "../interface";
 
 export default class UserService {
     public users = DB.Users;
+    public flights = DB.Flights;
+    public tickets = DB.Tickets;
 
     public async getAllUser(): Promise<User[]> {
         const users = await this.users.findAll();
@@ -29,5 +31,19 @@ export default class UserService {
         if (!user) throw new HttpException(400, `User not found`);
 
         await user.destroy();
+    }
+
+    public async getBookedFlight(userId: number): Promise<BookFlight[]> {
+        const user = await this.users.findByPk(userId);
+        if (!user) throw new HttpException(400, `User not found`);
+
+        const bookedFlights = await user.getBookModels({ 
+            include: [ 
+                { model: this.flights },
+                { model: this.tickets } 
+            ] 
+        });
+
+        return bookedFlights;
     }
 }

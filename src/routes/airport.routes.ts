@@ -1,4 +1,4 @@
-import e, { Router } from "express";
+import { Router } from "express";
 import { Routes } from "../interface";
 import AirportController from "../controllers/airport.controller";
 import AuthMiddleware from "../middlewares/auth.middleware";

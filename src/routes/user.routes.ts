@@ -17,6 +17,7 @@ export class UserRoute implements Routes {
     private initializeRoutes() {
         this.router.get(`${this.path}all`, this.authMiddleware.checkIfUser, this.userController.getUsers);
         this.router.get(`${this.path}detail`, this.authMiddleware.checkIfUser, this.userController.getMyUser);
+        this.router.get(`${this.path}booked-flight`, this.authMiddleware.checkIfUser, this.userController.getMyBookedFlight);
         this.router.get(`${this.path}id/:id`,this.authMiddleware. checkIfUser, this.userController.getUserById);
         this.router.get(`${this.path}username/:username`, this.authMiddleware.checkIfUser, this.userController.getUserByUsername);
         this.router.put(`${this.path}change-profile`, [

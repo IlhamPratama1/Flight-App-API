@@ -15,7 +15,7 @@ import { Routes } from "./interface";
 // Routes
 import { 
     HomeRoute, AuthRoute, UserRoute, 
-    AirlineRoute, FlightRoute, AirportRoute
+    AirlineRoute, FlightRoute, AirportRoute, TicketRoute
 } from "./routes";
 
 
@@ -36,6 +36,7 @@ class App {
             new AirlineRoute(),
             new FlightRoute(),
             new AirportRoute(),
+            new TicketRoute()
         ]
         
         this.connectToDatabase();

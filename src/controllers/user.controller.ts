@@ -48,6 +48,15 @@ export default class UserController {
         }
     }
 
+    public getMyBookedFlight = async (req: RequestWithUser, res: Response) => {
+        try {
+            const bookedFlights = await this.userService.getBookedFlight(req.user.id);
+            return res.status(200).send(bookedFlights);
+        } catch (err) {
+            return res.status(400).send({ 'message': `${err}` });
+        }
+    }
+
     public changeProfilePicture = async (req: RequestWithUser, res: Response) => {
         try {
             const user: User = req.user;

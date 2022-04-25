@@ -2,11 +2,11 @@ import DB from '../databases';
 import { HttpException } from '../exceptions/HttpException';
 import { Ticket } from '../interface';
 
-
 export default class TicketService {
     public books = DB.Books;
     public tickets = DB.Tickets;
     public flights = DB.Flights;
+    public passangers = DB.Passangers;
 
     public async generateTicket(flightBookId: number, paymentId: string, customerId: string): Promise<Ticket[]> {
         const flightBook = await this.books.findByPk(flightBookId);
@@ -33,5 +33,22 @@ export default class TicketService {
         await flight.save();
 
         return tickets;
+    }
+
+    public async getAllTicket() {
+        const tickets = await this.tickets.findAll();
+        return tickets;
+    }
+
+    public async getDetailTicket(ticketId: number): Promise<Ticket> {
+        const ticket = await this.tickets.findByPk(ticketId, {
+            include: [
+                { model: this.passangers },
+                { model: this.books, include: [ { model: this.flights } ]}
+            ]
+        });
+        if (!ticket) throw new HttpException(400, `Tickets not found`);
+
+        return ticket;
     }
 }

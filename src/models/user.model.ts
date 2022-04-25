@@ -1,6 +1,6 @@
 // Lib
 import { Model, Sequelize, DataTypes, Optional, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin } from 'sequelize';
-import { User, Role } from '../interface';
+import { User, Role, BookFlight } from '../interface';
 
 export type UserCreationAttributes = Optional<User, 'id'>;
 
@@ -15,6 +15,8 @@ export class UserModel extends Model<User, UserCreationAttributes> implements Us
 
     declare getRoleModels: BelongsToManyGetAssociationsMixin<Role>;
     declare setRoleModels: BelongsToManySetAssociationsMixin<Role, number>;
+
+    declare getBookModels: HasManyGetAssociationsMixin<BookFlight>;
 }
 
 export default function (sequelize: Sequelize): typeof UserModel {
