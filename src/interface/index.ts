@@ -11,3 +11,4 @@ export * from './payment.interface';
 export * from './facility.interface';
 export * from './passanger.interface';
 export * from './book.interface';
+export * from './ticket.interface';

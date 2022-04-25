@@ -39,6 +39,7 @@ export interface FlightFacility {
 }
 
 export interface SearchFlight {
+    page: string,
     AirlineModelId: number,
     flightTime: Date,
     arrivalTime: Date,

@@ -1,7 +1,4 @@
-// Lib
 import DB from "../databases";
-
-// Component
 import { HttpException } from "../exceptions/HttpException";
 import { 
     Flight, FlightData, SearchFlight, PaymentFlight,

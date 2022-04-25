@@ -5,14 +5,16 @@ import { Request, Response } from 'express';
 import FlightService from '../services/flight.service';
 import PaginationService from '../services/pagination.service';
 import PaymentService from '../services/payment.service';
+import TicketService from '../services/ticket.service';
 import { 
     FlightData, Flight, SearchFlight, 
-    FlightFacility, RequestWithUserGeneric, Passanger 
+    FlightFacility, RequestWithUserGeneric, Passanger, PaymentData 
 } from "../interface";
 
 export default class FlightController {
     private flightService = new FlightService();
     private paymentService = new PaymentService();
+    private ticketService = new TicketService();
     private pagination = new PaginationService(3);
 
     public allFlight = async (req: Request<{}, {}, {}, { page: string }>, res: Response) => {
@@ -27,7 +29,7 @@ export default class FlightController {
     public searchFlight = async (req: Request<{}, {}, {}, SearchFlight>, res: Response) => {
         try {
             const flights = await this.flightService.searchFlight(req.query);
-            return res.status(200).send(flights);
+            return res.status(200).send(this.pagination.paginate<Flight>(flights, req.query.page));
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
         }
@@ -84,10 +86,12 @@ export default class FlightController {
         }
     }
 
-    public checkOutFlight = async (req: Request, res: Response) => {
+    public checkOutFlight = async (req: RequestWithUserGeneric<{ id: number }>, res: Response) => {
         try {
-            const payment = await this.paymentService.CheckOut();
-            return res.status(200).send(payment);
+            const paymentData: PaymentData = req.body;
+            const { paymentId, customerId } = await this.paymentService.CheckOut(req.params.id, paymentData, req.user);
+            const tickets = await this.ticketService.generateTicket(req.params.id, paymentId, customerId);
+            return res.status(200).send(tickets);
         } catch (err: any) {
             return res.status(400).send({ 'message': `${err}` });
 
