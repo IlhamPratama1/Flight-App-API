@@ -97,4 +97,13 @@ export default class FlightController {
 
         }
     }
+
+    public payFlight = async (req: Request, res: Response) => {
+        try {
+            const response = await this.paymentService.PayFlight();
+            return res.status(200).send(response);
+        } catch (err: any) {
+            return res.status(400).send({ 'message': `${err}` });
+        }
+    }
 }

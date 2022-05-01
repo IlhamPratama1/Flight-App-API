@@ -13,8 +13,9 @@ export default class AuthMiddleware {
 
     public checkIfLogin = async (req: RequestWithUser, res: Response, next: NextFunction) => {
         try {
-            const tokenProvided = (req.header('x-access-token'));
-            if (tokenProvided) {
+            const token = (req.header('Authorization'));
+            if (token) {
+                const tokenProvided = token.split('Bearer ')[1];
                 const isValid = jwt.verify(tokenProvided, SECRET_KEY as string) as DataStoredInToken;
                 const user = await DB.Users.findByPk(isValid.id);
                 if (user) {
@@ -27,14 +28,15 @@ export default class AuthMiddleware {
                 return res.status(401).send({ 'message': `Authentication token missing`});
             }
         } catch (err) {
-            return res.status(401).send({ 'message': `${err}`});
+            return res.status(401).send(err);
         }
     }
 
     public checkIfUser = async (req: RequestWithUserGeneric<{}>, res: Response, next: NextFunction) => {
         try {
-            const tokenProvided = (req.header('x-access-token'));
-            if (tokenProvided) {
+            const token = (req.header('Authorization'));
+            if (token) {
+                const tokenProvided = token.split('Bearer ')[1];
                 const isValid = jwt.verify(tokenProvided, SECRET_KEY as string) as DataStoredInToken;
                 const { user, isRole } = await this.authMiddleware.checkUserRoleIs(isValid.id, 'user');
                 if (isRole) {
@@ -47,14 +49,15 @@ export default class AuthMiddleware {
                 return res.status(401).send({ 'message': `Authentication token not provided`});
             }
         } catch (err) {
-            return res.status(401).send({ 'message': `${err}`});
+            return res.status(401).send(err);
         }
     }
 
     public checkIfAdmin = async (req: RequestWithUserGeneric<{}>, res: Response, next: NextFunction) => {
         try {
-            const tokenProvided = (req.header('x-access-token'));
-            if (tokenProvided) {
+            const token = (req.header('Authorization'));
+            if (token) {
+                const tokenProvided = token.split('Bearer ')[1];
                 const isValid = jwt.verify(tokenProvided, SECRET_KEY as string) as DataStoredInToken;
                 const { user, isRole } = await this.authMiddleware.checkUserRoleIs(isValid.id, 'admin');
                 if (isRole) {
@@ -67,14 +70,15 @@ export default class AuthMiddleware {
                 return res.status(401).send({ 'message': `Authentication token not provided`});
             }
         } catch (err) {
-            return res.status(401).send({ 'message': `${err}`});
+            return res.status(401).send(err);
         }
     }
 
     public checkIfUserAdmin = async (req: RequestWithUserGeneric<{}>, res: Response, next: NextFunction) => {
         try {
-            const tokenProvided = (req.header('x-access-token'));
-            if (tokenProvided) {
+            const token = (req.header('Authorization'));
+            if (token) {
+                const tokenProvided = token.split('Bearer ')[1];
                 const isValid = jwt.verify(tokenProvided, SECRET_KEY as string) as DataStoredInToken;
                 const { user, isRole } = await this.authMiddleware.checkUserRoleIs(isValid.id, 'user', 'admin');
                 if (isRole) {
@@ -87,7 +91,7 @@ export default class AuthMiddleware {
                 return res.status(401).send({ 'message': `Authentication token not provided`});
             }
         } catch (err) {
-            return res.status(401).send({ 'message': `${err}`});
+            return res.status(401).send(err);
         }
     }
 }

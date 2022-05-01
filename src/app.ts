@@ -2,6 +2,8 @@
 import express from "express";
 import helmet from "helmet";
 import cors from 'cors';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 // Config
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from "./config";
@@ -42,6 +44,7 @@ class App {
         this.connectToDatabase();
         this.initializeMiddlewares();
         this.initializeRoutes();
+        this.initializeSwagger();
     }
 
     public listen() {
@@ -70,6 +73,22 @@ class App {
 
     private connectToDatabase() {
         DB.sequelize.sync({ force: false });
+    }
+
+    private initializeSwagger() {
+        const options = {
+            swaggerDefinition: {
+                info: {
+                    title: 'Flight App API',
+                    version: '1.0.0',
+                    description: 'Flight App API Documentation',
+                },
+            },
+            apis: ['swagger.yaml'],
+        };
+        
+        const specs = swaggerJSDoc(options);
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
     }
 }
 

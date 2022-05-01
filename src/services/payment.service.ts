@@ -1,5 +1,6 @@
 // Lib
 import Stripe from 'stripe';
+import midtransClient from 'midtrans-client';
 
 // Component
 import { PAYMENT_KEY } from '../config';
@@ -13,6 +14,11 @@ export default class PaymentService {
     public flights = DB.Flights;
 
     private stripe = new Stripe(PAYMENT_KEY as string, { apiVersion: '2020-08-27' });
+    private core = new midtransClient.CoreApi({
+        isProduction : false,
+        serverKey : 'SB-Mid-server-qtQZrq0qz-3Xs-uxk4zhUiOp',
+        clientKey : 'SB-Mid-client-kYVoT74zDV33Wc8s'
+    });
 
     public async CheckOut(bookId: number, paymentData: PaymentData, user: User): Promise<{ paymentId: string, customerId: string }> {
         const flightBook = await this.books.findByPk(bookId);
@@ -45,5 +51,22 @@ export default class PaymentService {
         await flightBook.save();
 
         return {paymentId: paymentIntent.id, customerId: customer.id};
-    }    
+    }
+
+    public async PayFlight() {
+        let parameter = {
+            "payment_type": "bank_transfer",
+            "transaction_details": {
+                "gross_amount": 24145,
+                "order_id": "C34312ERWQ",
+            },
+            "bank_transfer":{
+                "bank": "bni"
+            }
+        };
+
+        const response = await this.core.charge(parameter);
+
+        return response;
+    }
 }

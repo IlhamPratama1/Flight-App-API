@@ -22,5 +22,6 @@ export class FlightRoute implements Routes {
         this.router.get(`${this.path}process-order/:id`, this.flightController.processOrder);
         this.router.post(`${this.path}book-order/:id`, this.authMiddleware.checkIfUser, this.flightController.bookOrder);
         this.router.post(`${this.path}checkout/:id`, this.authMiddleware.checkIfUser, this.flightController.checkOutFlight);
+        this.router.post(`${this.path}pay-flight`, this.flightController.payFlight);
     }
 }
