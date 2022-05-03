@@ -8,6 +8,9 @@ import swaggerUi from 'swagger-ui-express';
 // Config
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from "./config";
 
+// Cache
+import { redisClient } from './cache';
+
 // Database
 import DB from "./databases";
 
@@ -44,6 +47,7 @@ class App {
         this.connectToDatabase();
         this.initializeMiddlewares();
         this.initializeRoutes();
+        this.initializeRedis();
         this.initializeSwagger();
     }
 
@@ -73,6 +77,14 @@ class App {
 
     private connectToDatabase() {
         DB.sequelize.sync({ force: false });
+    }
+
+    private initializeRedis() {
+        redisClient.on('error', (err) => console.log('Redis Client Error', err));
+        redisClient.connect();
+        redisClient.on('connect', function() {
+            console.log("Connected to redis");
+        });
     }
 
     private initializeSwagger() {

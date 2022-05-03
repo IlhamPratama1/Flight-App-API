@@ -74,7 +74,7 @@ export default class FlightService {
         const airline = await this.airlines.findByPk(flightData.airlineId);
         if(!airline) throw new HttpException(400, `Airline id not valid`);
 
-        await flight.update({ ...flightData, code: `${Date.now()}_${flightData.airlineId}` })
+        await flight.update({ ...flightData, code: `${Date.now()}_${flightData.airlineId}` });
         await flight.setAirlineModel(flightData.airlineId);
         return flight;
     }
@@ -140,26 +140,21 @@ export default class FlightService {
     public async addFacility(facility: FlightFacility) {
         let facilities: Facilities[] = [];
         let total: number = 0;
+        const allFacilities = await this.facilities.findAll();
 
         if (facility.covidInsurance === "true" || facility.covidInsurance === true) {
-            const facility = await this.facilities.findByPk(1);
-            if (!facility) throw new HttpException(400, `Flight not found`);
-            facilities.push(facility);
-            total = total + Number(facility.price);
+            facilities.push(allFacilities[0]);
+            total = total + Number(allFacilities[0].price);
         }
 
         if (facility.baggageInsurance === "true" || facility.baggageInsurance === true) {
-            const facility = await this.facilities.findByPk(2);
-            if (!facility) throw new HttpException(400, `Flight not found`);
-            facilities.push(facility);
-            total = total + Number(facility.price);
+            facilities.push(allFacilities[1]);
+            total = total + Number(allFacilities[1].price);
         }
 
         if (facility.fullProtection === "true" || facility.fullProtection === true) {
-            const facility = await this.facilities.findByPk(3);
-            if (!facility) throw new HttpException(400, `Flight not found`);
-            facilities.push(facility);
-            total = total + Number(facility.price);
+            facilities.push(allFacilities[2]);
+            total = total + Number(allFacilities[2].price);
         }
 
         return { facilities, total };
