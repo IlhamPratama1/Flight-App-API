@@ -1,3 +1,4 @@
+import { deleteCacheData, getOrSetCache } from '../cache';
 import DB from "../databases";
 import { HttpException } from "../exceptions/HttpException";
 import { 
@@ -28,7 +29,10 @@ export default class FlightService {
 
     // Func
     public async getAllFlight(): Promise<Flight[]> {
-        return await this.flights.findAll();
+        const flight = await getOrSetCache('flights',async () => {
+            return await this.flights.findAll();
+        });
+        return flight;
     }
 
     public async searchFlight(flightData: SearchFlight): Promise<Flight[]> {
@@ -52,8 +56,11 @@ export default class FlightService {
     }
 
     public async getFlightById(flightId: number): Promise<Flight> {
-        const flight = await this.flights.findByPk(flightId);
-        if(!flight) throw new HttpException(400, `Flight not found`);
+        const flight = await getOrSetCache(`flight/${flightId}`,async () => {
+            const data = await this.flights.findByPk(flightId);
+            if(!data) throw new HttpException(400, `Flight not found`);
+            return data;
+        });
 
         return flight;
     }
@@ -64,6 +71,7 @@ export default class FlightService {
 
         const flight = await this.flights.create({ ...flightData, code: `${Date.now()}_${flightData.airlineId}` });
         await flight.setAirlineModel(flightData.airlineId);
+        await deleteCacheData('flights');
         return flight;
     }
     
@@ -76,13 +84,14 @@ export default class FlightService {
 
         await flight.update({ ...flightData, code: `${Date.now()}_${flightData.airlineId}` });
         await flight.setAirlineModel(flightData.airlineId);
+        await deleteCacheData('flights');
         return flight;
     }
 
     public async deleteFlight(flightId: number): Promise<void> {
         const flight = await this.flights.findByPk(flightId);
         if(!flight) throw new HttpException(400, `Flight not found`);
-
+        await deleteCacheData('flights');
         await flight.destroy();
     }
 
@@ -133,6 +142,7 @@ export default class FlightService {
         await bookFlight.setFlightModel(flight);
         await bookFlight.setPassangerModels(passangers);
         await bookFlight.setFacilityModels(facilities);
+        await deleteCacheData(`booked/${userId}`);
 
         return { bookFlight, facilities, payment };
     }

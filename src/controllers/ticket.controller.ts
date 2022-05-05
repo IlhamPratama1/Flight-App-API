@@ -6,7 +6,7 @@ export default class TicketController {
 
     public getAllTicket = async (req: Request, res: Response) => {
         try {
-            return res.status(200).send(await this.ticketService.getAllTicket);
+            return res.status(200).send(await this.ticketService.getAllTicket());
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
         }

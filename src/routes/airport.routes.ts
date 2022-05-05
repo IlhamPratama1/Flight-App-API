@@ -15,6 +15,7 @@ export class AirportRoute implements Routes {
 
     private initializeRoutes() {
         this.router.get(`${this.path}all`, this.authMiddleware.checkIfUser, this.airportController.getAllAirport);
+        this.router.get(`${this.path}detail/:id`, this.authMiddleware.checkIfUser, this.airportController.getAirportId);
         this.router.post(`${this.path}create`, this.authMiddleware.checkIfUser, this.airportController.createAirport);
         this.router.put(`${this.path}update/:id`, this.authMiddleware.checkIfUser, this.airportController.updateAirport);
         this.router.delete(`${this.path}delete/:id`, this.authMiddleware.checkIfUser, this.airportController.deleteAirport);

@@ -2,7 +2,6 @@
 import { Request, Response } from 'express';
 
 // Component
-import { getOrSetCache } from '../cache';
 import FlightService from '../services/flight.service';
 import PaginationService from '../services/pagination.service';
 import PaymentService from '../services/payment.service';
@@ -20,10 +19,7 @@ export default class FlightController {
 
     public allFlight = async (req: Request<{}, {}, {}, { page: string }>, res: Response) => {
         try {
-            const data = await getOrSetCache('allFlight', async () => {
-                const flights: Flight[] = await this.flightService.getAllFlight();
-                return flights;
-            });
+            const data: Flight[] = await this.flightService.getAllFlight();
             return res.status(200).send(this.pagination.paginate<Flight>(data, req.query.page));
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });
@@ -32,10 +28,7 @@ export default class FlightController {
 
     public searchFlight = async (req: Request<{}, {}, {}, SearchFlight>, res: Response) => {
         try {
-            const data = await getOrSetCache(`flight?${JSON.stringify(req.query)}`, async () => {
-                const flights: Flight[]= await this.flightService.searchFlight(req.query);
-                return flights;
-            });
+            const data: Flight[]= await this.flightService.searchFlight(req.query);
             return res.status(200).send(this.pagination.paginate<Flight>(data, req.query.page));
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });

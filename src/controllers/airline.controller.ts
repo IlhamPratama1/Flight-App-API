@@ -32,7 +32,7 @@ export default class AirlineController {
         try {
             const airlineData: AirlineData = req.body;
 
-            if (!req.file) throw new HttpException(400, 'Error get User');
+            if (!req.file) throw new HttpException(400, 'Please fill all data');
             const path: string = req.protocol + '://' + req.get('host') + "/static/images/" + req.file.filename; 
 
             const airline: Airline = await this.airlineService.createAirline(airlineData, path);

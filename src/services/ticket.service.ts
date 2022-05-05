@@ -1,3 +1,4 @@
+import { deleteCacheData, getOrSetCache } from '../cache';
 import DB from '../databases';
 import { HttpException } from '../exceptions/HttpException';
 import { Ticket } from '../interface';
@@ -26,6 +27,9 @@ export default class TicketService {
             tickets.push(ticket);
         }
 
+        await deleteCacheData(`booked/${await flightBook.getUserModel()}`);
+        await deleteCacheData('tickets');
+
         const flight = await this.flights.findByPk((await flightBook.getFlightModel()).id);
         if(!flight) throw new HttpException(400, `Flight not found`);
 
@@ -36,19 +40,24 @@ export default class TicketService {
     }
 
     public async getAllTicket() {
-        const tickets = await this.tickets.findAll();
+        const tickets = await getOrSetCache('tickets', async () => {
+            const data = await this.tickets.findAll(); 
+            return data;
+        });
         return tickets;
     }
 
     public async getDetailTicket(ticketId: number): Promise<Ticket> {
-        const ticket = await this.tickets.findByPk(ticketId, {
-            include: [
-                { model: this.passangers },
-                { model: this.books, include: [ { model: this.flights } ]}
-            ]
+        const ticket = await getOrSetCache(`ticket/${ticketId}`,async () => {
+            const data = await this.tickets.findByPk(ticketId, {
+                include: [
+                    { model: this.passangers },
+                    { model: this.books, include: [ { model: this.flights } ]}
+                ]
+            });
+            if (!data) throw new HttpException(400, `Tickets not found`); 
+            return data;
         });
-        if (!ticket) throw new HttpException(400, `Tickets not found`);
-
         return ticket;
     }
 }

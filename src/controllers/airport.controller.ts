@@ -14,6 +14,15 @@ export default class AirportController {
         }
     }
 
+    public getAirportId = async (req: Request<{ id: number }>, res: Response) => {
+        try {
+            const airport: Airport = await this.airportService.detailAirport(req.params.id);
+            return res.status(200).send(airport);
+        } catch (err) {
+            return res.status(400).send({ 'message': `${err}` }); 
+        }
+    }
+
     public createAirport = async (req: Request, res: Response) => {
         try {
             const airportData: AirportData = req.body;

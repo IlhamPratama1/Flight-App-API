@@ -7,6 +7,7 @@ import { PAYMENT_KEY } from '../config';
 import { PaymentData, User } from '../interface';
 import DB from '../databases';
 import { HttpException } from '../exceptions/HttpException';
+import { deleteCacheData } from '../cache';
 
 
 export default class PaymentService {
@@ -49,6 +50,7 @@ export default class PaymentService {
 
         flightBook.status = "COMPLETE";
         await flightBook.save();
+        await deleteCacheData('books');
 
         return {paymentId: paymentIntent.id, customerId: customer.id};
     }
