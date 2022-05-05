@@ -1,6 +1,7 @@
 // Lib
 import { Request, Response } from "express";
 import fs from 'fs';
+import { deleteCacheData } from "../cache";
 
 // Component
 import DB from "../databases";
@@ -36,7 +37,8 @@ export default class AirlineController {
             const path: string = req.protocol + '://' + req.get('host') + "/static/images/" + req.file.filename; 
 
             const airline: Airline = await this.airlineService.createAirline(airlineData, path);
-
+            await deleteCacheData(`airlines`);
+            
             return res.status(200).send(airline);
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` }); 
@@ -60,6 +62,8 @@ export default class AirlineController {
 
             airline.name = airlineData.name;
             await airline.save();
+            await deleteCacheData(`airlines`);
+            await deleteCacheData(`airline/${airline.id}`);
 
             return res.status(200).send(airline);
         } catch (err) {
@@ -78,6 +82,8 @@ export default class AirlineController {
             }
 
             await airline.destroy();
+            await deleteCacheData(`airlines`);
+            await deleteCacheData(`airline/${airline.id}`);
 
             return res.status(200).send({ 'message': 'airline deleted' });
         } catch (err) {

@@ -37,6 +37,7 @@ export default class AirportService {
 
         await airport.update(airportData);
         await deleteCacheData('airports');
+        await deleteCacheData(`airport/${airportId}`);
         return airport;
     }
 
@@ -45,6 +46,7 @@ export default class AirportService {
         if(!airport) throw new HttpException(400, `Airport not found`);
         
         await deleteCacheData('airports');
+        await deleteCacheData(`airport/${airportId}`);
         await airport.destroy();
     }
 }

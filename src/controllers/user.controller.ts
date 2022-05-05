@@ -1,6 +1,7 @@
 // Lib
 import { Request, Response } from 'express';
 import fs from 'fs';
+import { deleteCacheData } from '../cache';
 
 // Component
 import DB from '../databases';
@@ -72,6 +73,8 @@ export default class UserController {
             const path: string = req.protocol + '://' + req.get('host') + "/static/images/" + req.file.filename;            
             userModel.profilePicture = path;
             await userModel.save();
+            await deleteCacheData('users');
+            await deleteCacheData(`user/${req.user.id}`);
 
             return res.status(200).send(userModel)
         } catch (err) {
@@ -92,7 +95,9 @@ export default class UserController {
             
             userModel.profilePicture = "";
             await userModel.save();
-            
+            await deleteCacheData('users');
+            await deleteCacheData(`user/${req.user.id}`);
+
             return res.status(200).send(userModel)
         } catch (err) {
             return res.status(400).send({ 'message': `${err}` });

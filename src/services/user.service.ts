@@ -38,7 +38,10 @@ export default class UserService {
     public async deleteUser(userId: number): Promise<void> {
         const user = await this.users.findByPk(userId);
         if (!user) throw new HttpException(400, `User not found`);
+
         await deleteCacheData('users');
+        await deleteCacheData(`user/${user.id}`);
+
         await user.destroy();
     }
 

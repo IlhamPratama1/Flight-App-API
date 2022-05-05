@@ -100,8 +100,9 @@ paths:
         500:
           description: 'Server Error'
 
+# [PUT] update/id
   /change-profile:
-    post:
+    put:
       security:
       - Bearer: []
       tags:
@@ -115,7 +116,7 @@ paths:
           type: file
           description: The file to upload.
 
-# [POST] Delete Profile Picture
+# [DELETE] Delete Profile Picture
   /user/delete-profile:
     delete:
       security:
@@ -134,7 +135,6 @@ paths:
           description: 'Server Error'
 
 # endregion --------------- User --------------- #
-
 
 # region --------------- Auth --------------- #
 # [POST] Sign In
@@ -305,6 +305,78 @@ paths:
 
 # endregion --------------- Auth --------------- #
 
+# region --------------- Airline --------------- #
+# [GET] all flight
+  /airline/all:
+    get:
+      security:
+      - Bearer: []
+      tags:
+      - airline
+      summary: Find All airline
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+
+# [GET] users/id
+  /airline/detail/{id}:
+    get:
+      security:
+      - Bearer: []
+      tags:
+      - airline
+      summary: Find Airline By Id
+      parameters:
+      - name: id
+        in: path
+        description: Airline Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] Delete Airline
+  /airline/delete/{id}:
+    delete:
+      security:
+      - Bearer: []
+      tags:
+      - airline
+      summary: Delete Airline data
+      parameters:
+      - name: id
+        in: path
+        description: Airline Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+# endregion
+
+# region --------------- Flight --------------- #
+# [GET] All flight
+
+
+
+# endregion
 
 # definitions
 definitions:

@@ -84,14 +84,20 @@ export default class FlightService {
 
         await flight.update({ ...flightData, code: `${Date.now()}_${flightData.airlineId}` });
         await flight.setAirlineModel(flightData.airlineId);
+
         await deleteCacheData('flights');
+        await deleteCacheData(`flight/${flight.id}`);
+
         return flight;
     }
 
     public async deleteFlight(flightId: number): Promise<void> {
         const flight = await this.flights.findByPk(flightId);
         if(!flight) throw new HttpException(400, `Flight not found`);
+
         await deleteCacheData('flights');
+        await deleteCacheData(`flight/${flight.id}`);
+
         await flight.destroy();
     }
 
@@ -142,6 +148,7 @@ export default class FlightService {
         await bookFlight.setFlightModel(flight);
         await bookFlight.setPassangerModels(passangers);
         await bookFlight.setFacilityModels(facilities);
+
         await deleteCacheData(`booked/${userId}`);
 
         return { bookFlight, facilities, payment };
