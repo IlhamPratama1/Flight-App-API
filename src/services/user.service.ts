@@ -50,7 +50,8 @@ export default class UserService {
         if (!user) throw new HttpException(400, `User not found`);
 
         const bookedFlights = await getOrSetCache(`booked/${user.id}`, async () => {
-            const data = await user.getBookModels({ 
+            const data = await user.getBookModels({
+                where: { status: "COMPLETE" },
                 include: [ 
                     { model: this.flights },
                     { model: this.tickets } 

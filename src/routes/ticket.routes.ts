@@ -16,5 +16,6 @@ export class TicketRoute implements Routes {
     private initializeRoutes() {
         this.router.get(`${this.path}all`, this.authMiddleware.checkIfUser, this.ticketController.getAllTicket);
         this.router.get(`${this.path}detail/:id`, this.authMiddleware.checkIfUser, this.ticketController.getTicketById);
+        this.router.delete(`${this.path}delete/:id`, this.authMiddleware.checkIfUser, this.ticketController.deleteTicketById);
     }
 }

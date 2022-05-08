@@ -20,4 +20,13 @@ export default class TicketController {
             return res.status(400).send({ 'message': `${err}` });
         }
     }
+
+    public deleteTicketById = async (req: Request<{id: number}>, res: Response) => {
+        try {
+            await this.ticketService.deleteTicket(req.params.id);
+            return res.status(200).send({ 'message': 'Ticket deleted' });
+        } catch (err) {
+            return res.status(400).send({ 'message': `${err}` });
+        }
+    }
 }

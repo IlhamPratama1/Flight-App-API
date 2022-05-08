@@ -60,4 +60,13 @@ export default class TicketService {
         });
         return ticket;
     }
+
+    public async deleteTicket(ticketId: number): Promise<void> {
+        const ticket = await this.tickets.findByPk(ticketId);
+        if(!ticket) throw new HttpException(400, `Airport not found`);
+        
+        await deleteCacheData('tickets');
+        await deleteCacheData(`ticket/${ticket}`);
+        await ticket.destroy();
+    }
 }

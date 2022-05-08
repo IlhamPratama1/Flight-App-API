@@ -322,7 +322,7 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] users/id
+# [GET] flight/detail/id
   /airline/detail/{id}:
     get:
       security:
@@ -336,6 +336,67 @@ paths:
         description: Airline Id
         required: true
         type: integer
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [POST] create new flight
+  /airline/create:
+    post:
+      security:
+      - Bearer: []
+      tags:
+      - airline
+      summary: Create new Airline
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: name
+          type: string
+          description: Airline Name.
+          required: true
+        - in: formData
+          name: image
+          type: file
+          required: true
+          description: The file to upload.
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] update flight
+  /airline/update/{id}:
+    put:
+      security:
+      - Bearer: []
+      tags:
+      - airline
+      summary: Update Airline
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: name
+          type: string
+          description: Airline Name.
+          required: true
+        - in: formData
+          name: image
+          type: file
+          description: The file to upload.
       responses:
         200:
           description: 'OK'
@@ -371,16 +432,448 @@ paths:
           description: 'Server Error'
 # endregion
 
+# region --------------- Airport --------------- #
+# [GET] All airport
+  /airport/all:
+    get:
+      security:
+      - Bearer: []
+      tags:
+      - airport
+      summary: Find All Airport
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
+
+# [GET] airport/detail/id
+  /airport/detail/{id}:
+    get:
+      security:
+      - Bearer: []
+      tags:
+      - airport
+      summary: Find Airport By Id
+      parameters:
+      - name: id
+        in: path
+        description: Airport Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [POST] Create Airport
+  /airport/create:
+    post:
+      security:
+      - Bearer: []
+      tags:
+      - airport
+      summary: Create new Airport Data
+      parameters:
+      - name: body
+        in: body
+        description: Airport Data
+        required: true
+        schema:
+          $ref: '#/definitions/airport'
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] Update Airport Data
+  /airport/update/{id}:
+    put:
+      security:
+      - Bearer: []
+      tags:
+      - airport
+      summary: update Airport Data
+      parameters:
+      - name: id
+        in: path
+        description: Airport Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: Airport Data
+        required: true
+        schema:
+          $ref: '#/definitions/airport'
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] Delete Airline
+  /airport/delete/{id}:
+    delete:
+      security:
+      - Bearer: []
+      tags:
+      - airport
+      summary: Delete Airport data
+      parameters:
+      - name: id
+        in: path
+        description: Airport Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+# endregion
+
 # region --------------- Flight --------------- #
 # [GET] All flight
+  /flight/all:
+    get:
+      tags:
+      - flight
+      summary: Find All flight
+      parameters:
+        - in: query
+          name: page
+          type: integer
+          description: Page index
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
 
+# [GET] Search flight
+  /flight/search:
+    get:
+      tags:
+      - flight
+      summary: Search flight
+      parameters:
+        - in: query
+          name: page
+          type: integer
+          description: Page index
+        - in: query
+          name: flightDate
+          type: string
+        - in: query
+          name: arrivalDate
+          type: string
+        - in: query
+          name: flightTime
+          type: string
+        - in: query
+          name: arrivalTime
+          type: string
+        - in: query
+          name: AirlineModelId
+          type: integer
+        - in: query
+          name: adultPx
+          type: integer
+        - in: query
+          name: childPx
+          type: integer
+        - in: query
+          name: babyPx
+          type: integer
+        - in: query
+          name: seatType
+          type: string
+        - in: query
+          name: fromAirportId
+          type: integer
+        - in: query
+          name: toAirportId
+          type: integer
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
 
+# [POST] Create Airport
+  /flight/create:
+    post:
+      security:
+      - Bearer: []
+      tags:
+      - flight
+      summary: Create new Flight Data
+      parameters:
+      - name: body
+        in: body
+        description: Flight Data
+        required: true
+        schema:
+          $ref: '#/definitions/flight'
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] Create Flight
+  /flight/update/{id}:
+    put:
+      security:
+      - Bearer: []
+      tags:
+      - flight
+      summary: Update Flight Data
+      parameters:
+      - name: id
+        in: path
+        description: Flight Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: Flight Data
+        required: true
+        schema:
+          $ref: '#/definitions/flight'
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] Delete Flight
+  /flight/delete/{id}:
+    delete:
+      security:
+      - Bearer: []
+      tags:
+      - flight
+      summary: Delete Flight data
+      parameters:
+      - name: id
+        in: path
+        description: Flight Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [GET] GET Flight detail 
+  /flight/process-order/{id}:
+    get:
+      tags:
+      - flight
+      summary: Get Flight detail
+      parameters:
+      - name: id
+        in: path
+        description: Flight Id
+        required: true
+        type: integer
+      - in: query
+        name: adultPx
+        type: integer
+      - in: query
+        name: childPx
+        type: integer
+      - in: query
+        name: babyPx
+        type: integer
+      - in: query
+        name: covidInsurance
+        type: boolean
+      - in: query
+        name: baggageInsurance
+        type: boolean
+      - in: query
+        name: fullProtection
+        type: boolean
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [POST] Book Order
+  /flight/book-order/{id}:
+    post:
+      security:
+      - Bearer: []
+      tags:
+      - flight
+      summary: Create new Flight Data
+      parameters:
+      - name: id
+        in: path
+        description: Flight Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: Passanger & Facility data
+        required: true
+        schema:
+          $ref: '#/definitions/book-flight'
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [POST] Checkout Flight
+  /flight/checkout/{id}:
+    post:
+      security:
+      - Bearer: []
+      tags:
+      - flight
+      summary: Checkout flight
+      parameters:
+      - name: id
+        in: path
+        description: Flight Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: Passanger & Facility data
+        required: true
+        schema:
+          $ref: '#/definitions/card-checkout'
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
 
 # endregion
 
-# definitions
-definitions:
+# region --------------- Ticket --------------- #
+# [GET] All Ticket
+  /ticket/all:
+    get:
+      security:
+      - Bearer: []
+      tags:
+      - ticket
+      summary: Find All Tickets
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        500:
+          description: 'Server Error'
 
+# [GET] ticket/detail/id
+  /ticket/detail/{id}:
+    get:
+      security:
+      - Bearer: []
+      tags:
+      - ticket
+      summary: Find all my ticket
+      parameters:
+      - name: id
+        in: path
+        description: Ticket Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        401:
+          description: 'Unauthorized'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] Delete Airline
+  /ticket/delete/{id}:
+    delete:
+      security:
+      - Bearer: []
+      tags:
+      - ticket
+      summary: Delete Ticket data
+      parameters:
+      - name: id
+        in: path
+        description: Ticket Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'Success'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+# endregion
+
+# region ~~~~~~~~~~ definitions ~~~~~~~~~~ #
+definitions:
   signIn:
     type: object
     required:
@@ -414,7 +907,7 @@ definitions:
       role:
         type: string
         description: user Role
-        
+
   refreshToken:
     type: object
     required:
@@ -423,6 +916,167 @@ definitions:
       refreshToken:
         type: string
         description: Refresh Token
+
+  airport:
+    type: object
+    required:
+        - code
+        - city
+        - name
+    properties:
+      code:
+        type: string
+        description: airport Code
+      city:
+        type: string
+        description: airport Place
+      name:
+        type: string
+        description: airport Name
+  
+  flight:
+    type: object
+    required:
+        - airlineId
+        - airlineId
+        - flightTime
+        - arrivalTime
+        - flightDate
+        - arrivalDate
+        - adultPx
+        - childPx
+        - babyPx
+        - seatType
+        - totalSeat
+        - baggage
+        - fromAirportId
+        - toAirportId
+    properties:
+      airlineId:
+        type: integer
+      flightTime:
+        type: string
+      arrivalTime:
+        type: string
+      flightDate:
+        type: string
+      arrivalDate:
+        type: string
+      adultPx:
+        type: integer
+      childPx:
+        type: integer
+      babyPx:
+        type: integer
+      seatType:
+        type: string
+      totalSeat:
+        type: integer
+      baggage:
+        type: integer
+      fromAirportId:
+        type: integer
+      toAirportId:
+        type: integer
+
+  book-flight:
+    type: object
+    required:
+        - passangers
+        - facilities
+    properties:
+      passangers:
+        type: array
+        items:
+          type: object
+          description: Passanger Data
+          required:
+            - title
+            - name
+            - noIdentity
+            - nation
+            - age
+            - birthDate
+          properties:
+            title:
+              type: string
+            name:
+              type: string
+            noIdentity:
+              type: string
+            nation:
+              type: string
+            age:
+              type: string
+            birthDate:
+              type: string
+      facilities:
+        type: object
+        description: Facility Data
+        required:
+          - covidInsurance
+          - baggageInsurance
+          - fullProtection
+        properties:
+          covidInsurance:
+            type: boolean
+          baggageInsurance:
+            type: boolean
+          fullProtection:
+            type: boolean
+
+  card-checkout:
+    type: object
+    required:
+        - name
+        - address
+        - email
+        - card
+    properties:
+      name:
+        type: string
+      address:
+        type: object
+        required:
+          - city
+          - country
+          - line1
+          - line2
+          - postal_code
+          - state
+        properties:
+          city:
+            type: string
+          country:
+            type: string
+          line1:
+            type: string
+          line2:
+            type: string
+          postal_code:
+            type: string
+          state:
+            type: string
+      email:
+        type: string
+      card:
+        type: object
+        required:
+          - number
+          - exp_month
+          - exp_year
+          - cvc
+        properties:
+          number:
+            type: string
+          exp_month:
+            type: integer
+          exp_year:
+            type: integer
+          cvc:
+            type: string
+
+# endregion
 
 securityDefinitions:
   Bearer:
