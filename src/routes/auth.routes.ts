@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Routes } from "../interface";
 import AuthController from "../controllers/auth.controller";
 import AuthMiddleware from "../middlewares/auth.middleware";
+
 export class AuthRoute implements Routes {
     public path = '/auth/';
     public router = Router();
