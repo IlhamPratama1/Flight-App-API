@@ -34,6 +34,6 @@
 - Containerization:
     - Dockerize
 - Unit test:
-    - jest
+    - jest (on going)
 - Web server:
     - Nginx (on going)

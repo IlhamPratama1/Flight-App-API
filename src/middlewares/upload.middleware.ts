@@ -10,5 +10,13 @@ const storage = multer.diskStorage({
     }
 });
 
-export const uploadImage = multer({ storage: storage }).single('image');
+export const uploadImage = multer({ 
+    storage: storage,
+    fileFilter: (req: Request, file: Express.Multer.File, cb) => {
+        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg")
+            cb(null, true);
+        else
+            cb(null, false);
+    }
+}).single('image');
 

@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { Airport, AirportData } from "../interface";
 import AirportService from "../services/airport.service";
+import AirportValidation from "../validation/airport.validation";
 
 export default class AirportController {
     private airportService = new AirportService();
+    private validation = new AirportValidation();
 
     public getAllAirport = async (req: Request, res: Response) => {
         try {
@@ -25,6 +27,7 @@ export default class AirportController {
 
     public createAirport = async (req: Request, res: Response) => {
         try {
+            await this.validation.airportValidation(req.body);
             const airportData: AirportData = req.body;
             const airport: Airport = await this.airportService.createAirport(airportData);
 
@@ -36,6 +39,7 @@ export default class AirportController {
 
     public updateAirport = async (req: Request<{ id: number }>, res: Response) => {
         try {
+            await this.validation.airportValidation(req.body);
             const airportData: AirportData = req.body;
             const airport: Airport = await this.airportService.updateAirport(req.params.id, airportData);
 

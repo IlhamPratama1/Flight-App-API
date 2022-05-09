@@ -8,9 +8,11 @@ import DB from "../databases";
 import { HttpException } from "../exceptions/HttpException";
 import { Airline, AirlineData } from "../interface";
 import AirlineService from "../services/airline.service";
+import AirlineValidation from "../validation/airline.validation";
 
 export default class AirlineController {
     private airlineService = new AirlineService();
+    private validation = new AirlineValidation();
 
     public getAirlines = async (req: Request, res: Response) => {
         try {
@@ -31,6 +33,7 @@ export default class AirlineController {
 
     public createAirline = async (req: Request, res: Response) => {
         try {
+            await this.validation.airlineValidation(req.body);
             const airlineData: AirlineData = req.body;
 
             if (!req.file) throw new HttpException(400, 'Please fill all data');
@@ -47,6 +50,7 @@ export default class AirlineController {
 
     public updateAirline = async (req: Request, res: Response) => {
         try {
+            await this.validation.airlineValidation(req.body);
             const airlineData: AirlineData = req.body;
 
             const airline = await DB.Airlines.findByPk(req.params.id);

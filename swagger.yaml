@@ -388,6 +388,11 @@ paths:
       consumes:
         - multipart/form-data
       parameters:
+        - name: id
+          in: path
+          description: Airline Id
+          required: true
+          type: integer
         - in: formData
           name: name
           type: string

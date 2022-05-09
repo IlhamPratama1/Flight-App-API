@@ -45,8 +45,8 @@ export default class AuthValidation {
     public async accessTokenValidation(data) {
         const schema = Joi.object({
             refreshToken    : Joi.string().required().label('refreshToken').messages({
-                                'string.empty': `{{#label}} cannot be an empty field`,
-                                'any.required': `{{#label}} is a required field`,
+                                'string.empty': `refreshToken cannot be an empty field`,
+                                'any.required': `refreshToken is a required field`,
                             })
         });
         return await schema.validateAsync(data);

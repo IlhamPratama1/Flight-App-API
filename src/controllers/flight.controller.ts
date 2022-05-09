@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 // Component
 import FlightService from '../services/flight.service';
 import PaginationService from '../services/pagination.service';
+import FlightValidation from '../validation/flight.validation';
 import PaymentService from '../services/payment.service';
 import TicketService from '../services/ticket.service';
 import { 
@@ -15,7 +16,9 @@ export default class FlightController {
     private flightService = new FlightService();
     private paymentService = new PaymentService();
     private ticketService = new TicketService();
+
     private pagination = new PaginationService(3);
+    private validation = new FlightValidation();
 
     public allFlight = async (req: Request<{}, {}, {}, { page: string }>, res: Response) => {
         try {
@@ -37,6 +40,7 @@ export default class FlightController {
 
     public createFlight = async (req: Request, res: Response) => {
         try {
+            await this.validation.flightValidation(req.body);
             const flightData: FlightData = req.body;
             const flight = await this.flightService.createFlight(flightData);
     
@@ -48,6 +52,7 @@ export default class FlightController {
 
     public updateFlight = async (req: Request<{ id: number }>, res: Response) => {
         try {
+            await this.validation.flightValidation(req.body);
             const flightData: FlightData = req.body;
             const flight = await this.flightService.updateFlight(req.params.id, flightData);
     
@@ -77,6 +82,7 @@ export default class FlightController {
 
     public bookOrder =async (req: RequestWithUserGeneric<{ id: number }>, res: Response) => {
         try {
+            await this.validation.bookOrderValidation(req.body);
             const passangersData: Passanger[] = req.body.passangers;
             const flightFacility: FlightFacility = req.body.facilities;
             const bookFlight = await this.flightService.bookOrder(req.user.id, req.params.id, flightFacility, passangersData);
@@ -88,6 +94,7 @@ export default class FlightController {
 
     public checkOutFlight = async (req: RequestWithUserGeneric<{ id: number }>, res: Response) => {
         try {
+            await this.validation.checkoutValidation(req.body);
             const paymentData: PaymentData = req.body;
             const { paymentId, customerId } = await this.paymentService.CheckOut(req.params.id, paymentData, req.user);
             const tickets = await this.ticketService.generateTicket(req.params.id, paymentId, customerId);
