@@ -4,20 +4,10 @@ import helmet from "helmet";
 import cors from 'cors';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-
-// Config
 import { NODE_ENV, PORT, ORIGIN, CREDENTIALS } from "./config";
-
-// Cache
 import { redisClient } from './cache';
-
-// Database
 import DB from "./databases";
-
-// Interface
 import { Routes } from "./interface";
-
-// Routes
 import { 
     HomeRoute, AuthRoute, UserRoute, 
     AirlineRoute, FlightRoute, AirportRoute, TicketRoute
@@ -80,7 +70,7 @@ class App {
     }
 
     private initializeRedis() {
-        redisClient.on('error', (err) => console.log('Redis Client Error', err));
+        redisClient.on('error', (err) => console.log('Redis Client Errors', err));
         redisClient.connect();
         redisClient.on('connect', function() {
             console.log("Connected to redis");

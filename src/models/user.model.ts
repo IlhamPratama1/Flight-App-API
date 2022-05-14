@@ -1,5 +1,5 @@
 // Lib
-import { Model, Sequelize, DataTypes, Optional, HasManyGetAssociationsMixin, HasManySetAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin } from 'sequelize';
+import { Model, Sequelize, DataTypes, Optional, HasManyGetAssociationsMixin, BelongsToManyGetAssociationsMixin, BelongsToManySetAssociationsMixin } from 'sequelize';
 import { User, Role, BookFlight } from '../interface';
 
 export type UserCreationAttributes = Optional<User, 'id'>;

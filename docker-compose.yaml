@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  postgres-database:
+    container_name: postgres-database
+    image: postgres:14.2-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Ilham11pratama
+    ports:
+      - '5432:5432'
+  redis-cache:
+    container_name: redis-cache
+    image: redis:7.0.0-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+  flight-app-api-nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/flight-app-api-nodejs/src
+      - ./nodemon.json:/home/node/flight-app-api-nodejs/nodemon.json
+    container_name: flight-app-api-nodejs
+    depends_on:
+      - postgres-database
+      - redis-cache
+    expose:
+      - '8000'
+    ports:
+      - '8000:8000'
+    command: npm run dev

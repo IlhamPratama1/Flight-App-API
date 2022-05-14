@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "cross-env NODE_ENV=production ts-node-dev ./index.ts",
-    "dev": "cross-env NODE_ENV=development ts-node-dev ./index.ts",
-    "build": "swc src -d dist --source-maps --copy-files"
+    "start": "cross-env NODE_ENV=production ts-node-dev ./src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon -L ./src/index.ts",
+    "build": "tsc -p ."
   },
   "author": "ilham pratama",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "cross-env": "^7.0.3",
     "jest": "^27.5.1",
     "joi-to-typescript": "^4.0.0",
+    "nodemon": "^2.0.16",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "ts-node-dev": "^1.1.8",

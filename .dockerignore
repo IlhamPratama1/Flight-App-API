@@ -1,0 +1,10 @@
+# compiled output
+.vscode
+/node_modules
+
+# test
+jest.config.js
+
+# docker
+Dockerfile
+docker-compose.yml
