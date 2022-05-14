@@ -18,8 +18,8 @@ export default class AuthValidation {
                             'string.min': `password should have a minimum length of 6`,
                             'any.required': `password is a required field`,
                         }),
-            role        : Joi.array().required().label('role').messages({
-                            'array.empty': `role cannot be an empty data, choose "user" or "admin" or both`,
+            role        : Joi.string().required().label('role').messages({
+                            'string.empty': `role cannot be an empty data, choose "user" or "admin" or both`,
                             'any.required': `role is a required field`,
                         })
         });

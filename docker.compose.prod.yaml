@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  flight-app-api-nodejs:
+    build:
+      target: production
+    command: node build/index.js
