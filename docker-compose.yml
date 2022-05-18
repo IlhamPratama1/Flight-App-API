@@ -1,12 +1,14 @@
 version: '3.7'
 
 services:
-  postgres-database:
-    container_name: postgres-database
+  flight-app-database:
+    container_name: flight-app-database
     image: postgres:14.2-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=Ilham11pratama
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - '5432:5432'
   redis-cache:
@@ -24,7 +26,7 @@ services:
       - ./nodemon.json:/home/node/flight-app-api-nodejs/nodemon.json
     container_name: flight-app-api-nodejs
     depends_on:
-      - postgres-database
+      - flight-app-database
       - redis-cache
     expose:
       - '8000'

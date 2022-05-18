@@ -1,0 +1,1 @@
+CREATE DATABASE flight_app OWNER postgres;

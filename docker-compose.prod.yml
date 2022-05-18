@@ -4,4 +4,4 @@ services:
   flight-app-api-nodejs:
     build:
       target: production
-    command: node build/index.js
+    command: npm run start
