@@ -1,12 +1,13 @@
 import { createClient } from 'redis';
+import { NODE_ENV } from '../config';
 
 const DEFAULT_EXIPIRATION: number = 3600;
-export const redisClient = createClient({
+export const redisClient = NODE_ENV === 'production' ? createClient({
     socket: {
         port: 6379,
         host: 'redis-cache'
     }
-});
+}) : createClient();
 
 export async function getOrSetCache(key: string, cb: Function) {
     const data = await redisClient.get(key);

@@ -66,23 +66,7 @@ class App {
     }
 
     private connectToDatabase() {
-        DB.sequelize.sync({ force: true }).then(() => {
-            initializeData();
-        });
-
-        function initializeData() {
-            DB.Roles.bulkCreate([
-                {
-                    name: 'user'
-                },
-                {
-                    name: 'admin'
-                },
-                {
-                    name: 'moderator'
-                }
-            ]);
-        }
+        DB.sequelize.sync({ force: true });
     }
 
     private initializeRedis() {
